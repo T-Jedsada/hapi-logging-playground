@@ -1,24 +1,34 @@
 const Hapi = require("@hapi/hapi");
-const winston = require("winston");
+const { createLogger, format, transports, config } = require("winston");
+const { combine, timestamp, prettyPrint } = format;
 const { goodWinston } = require("hapi-good-winston");
 
-const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.json(),
+// ====================================config logs=====================================================
+
+const logger = createLogger({
+  levels: config.syslog.levels,
+  format: combine(timestamp(), prettyPrint(), format.json(), format.colorize()),
   transports: [
-    new winston.transports.File({
-      filename: "combined.log",
-      zippedArchive: true
+    new transports.File({
+      filename: "./logs/app-logs.log",
+      handleExceptions: true,
+      maxsize: 5242880, //5MB
+      maxFiles: 5,
+      zippedArchive: true,
+      response: true
     }),
-    new winston.transports.File({ filename: "error.log", level: "error" })
-  ]
+    new transports.Console()
+  ],
+  meta: true
 });
 
 const goodWinstonOptions = {
   levels: {
-    response: "debug",
-    error: "info"
-  }
+    response: "info",
+    error: "error",
+    request: true
+  },
+  responsePayload: true
 };
 
 const options = {
@@ -26,15 +36,7 @@ const options = {
     interval: 1000
   },
   reporters: {
-    winston: [goodWinston(logger)],
-    winstonWithLogLevels: [goodWinston(logger, goodWinstonOptions)],
-    winston2: [
-      {
-        module: "hapi-good-winston",
-        name: "goodWinston",
-        args: [logger, goodWinstonOptions]
-      }
-    ]
+    winstonWithLogLevels: [goodWinston(logger, goodWinstonOptions)]
   }
 };
 
@@ -47,6 +49,52 @@ const init = async () => {
   server.route({
     method: "GET",
     path: "/",
+    handler: (request, h) => {
+      return "Hello World!";
+    }
+  });
+
+  server.route({
+    method: "GET",
+    path: "/error",
+    handler: (request, h) => {
+      return new Error(
+        "This is an error and it should be logged to the console"
+      );
+    }
+  });
+
+  server.route({
+    method: "GET",
+    path: "/users",
+    handler: (request, h) => {
+      return "Hello World!";
+    }
+  });
+
+  server.route({
+    method: "POST",
+    path: "/users",
+    handler: (request, h) => {
+      logger.info(`${JSON.stringify(request.payload)}`);
+      return {
+        username: request.payload.username,
+        password: request.payload.password
+      };
+    }
+  });
+
+  server.route({
+    method: "PUT",
+    path: "/users",
+    handler: (request, h) => {
+      return "Hello World!";
+    }
+  });
+
+  server.route({
+    method: "DELETE",
+    path: "/users",
     handler: (request, h) => {
       return "Hello World!";
     }
