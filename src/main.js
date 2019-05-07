@@ -1,22 +1,21 @@
 const Hapi = require("@hapi/hapi");
-const { createLogger, format, transports, config } = require("winston");
+const { createLogger, format, transports } = require("winston");
 const { combine, timestamp, prettyPrint } = format;
 const { goodWinston } = require("hapi-good-winston");
 
-// ====================================config logs=====================================================
-
 const logger = createLogger({
-  levels: config.syslog.levels,
+  level: "info",
   format: combine(timestamp(), prettyPrint(), format.json(), format.colorize()),
   transports: [
     new transports.File({
       filename: "./logs/app-logs.log",
-      handleExceptions: true,
       maxsize: 5242880, //5MB
       maxFiles: 5,
+      handleExceptions: false,
       zippedArchive: true,
-      response: true
+      level: "info"
     }),
+    new transports.File({ filename: "./logs/error-logs.log", level: "error" }),
     new transports.Console()
   ],
   meta: true
@@ -24,9 +23,8 @@ const logger = createLogger({
 
 const goodWinstonOptions = {
   levels: {
-    response: "info",
-    error: "error",
-    request: true
+    response: "debug",
+    error: "error"
   },
   responsePayload: true
 };
@@ -98,6 +96,16 @@ const init = async () => {
     handler: (request, h) => {
       return "Hello World!";
     }
+  });
+
+  server.ext("onPreResponse", function(request, reply) {
+    const obj = {
+      path: request.path,
+      method: request.method,
+      paylaod: request.payload
+    };
+    logger.info(JSON.stringify(obj));
+    return reply.continue;
   });
 
   await server.register({
