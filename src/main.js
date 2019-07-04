@@ -3,6 +3,9 @@ const { createLogger, format, transports } = require("winston");
 const { combine, timestamp, prettyPrint } = format;
 const { goodWinston } = require("hapi-good-winston");
 
+const blacklist = ["password", "username"];
+const maskJson = require("mask-json")(blacklist, { replacement: "*****" });
+
 const logger = createLogger({
   level: "info",
   format: combine(timestamp(), prettyPrint(), format.json(), format.colorize()),
@@ -104,7 +107,11 @@ const init = async () => {
       method: request.method,
       paylaod: request.payload
     };
-    logger.info(JSON.stringify(obj));
+    var start = parseInt(request.headers["x-req-start"]);
+    var end = new Date().getTime();
+    obj.response_time = `${end - start} ms`;
+    console.log(`response_time: ${end - start} ms`);
+    logger.info(JSON.stringify(maskJson(obj)));
     return reply.continue;
   });
 
@@ -112,6 +119,7 @@ const init = async () => {
     plugin: require("good"),
     options
   });
+  await server.register(require("hapi-response-time"));
   await server.start();
   console.log("Server running on %s", server.info.uri);
 };

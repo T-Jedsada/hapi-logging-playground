@@ -1001,6 +1001,11 @@ hapi-good-winston@^2.1.0:
     json-stringify-safe "^5.0.1"
     winston "2.x || 3.x"
 
+hapi-response-time@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/hapi-response-time/-/hapi-response-time-2.0.0.tgz#0dd749962d690f92a1d6f4598b7c2f225c48f7e1"
+  integrity sha512-ca73HbVcEKIbD5e6h9IveWd87DI/yNyNh/zarcCj+ijRv/SuJigkesNNAjSdfgt2Vvi+IO5VOaTY+T/+DwaK1w==
+
 hapi@>=17.x:
   version "18.1.0"
   resolved "https://registry.yarnpkg.com/hapi/-/hapi-18.1.0.tgz#98a2a5a8f37a41eb196bdad9727f66b1fbca5fec"
@@ -1390,7 +1395,7 @@ latest-version@^3.0.0:
   dependencies:
     package-json "^4.0.0"
 
-lodash@^4.17.11:
+lodash@^4.17.11, lodash@^4.17.4:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
@@ -1437,6 +1442,13 @@ map-visit@^1.0.0:
   integrity sha1-7Nyo8TFE5mDxtb1B8S80edmN+48=
   dependencies:
     object-visit "^1.0.0"
+
+mask-json@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/mask-json/-/mask-json-1.0.2.tgz#31d1ec5e6bdc62bb1444ce469fe077133bec8413"
+  integrity sha512-EOskzYwm49AzjwEVqR6oUw/CaoPR2qP74+GczTWpjVT1kXOKNSNJ7VxFZHO+5Y9e7m3GUGENZK0iBGvlZFgh8g==
+  dependencies:
+    lodash "^4.17.4"
 
 micromatch@^3.1.10, micromatch@^3.1.4:
   version "3.1.10"

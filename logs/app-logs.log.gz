@@ -1,0 +1,2 @@
+{"message":"{\"username\":\"test\",\"password\":\"testtest\"}","level":"info","timestamp":"2019-07-04T12:42:27.209Z"}
+{"message":"{\"path\":\"/users\",\"method\":\"post\",\"paylaod\":{\"username\":\"*****\",\"password\":\"*****\"},\"response_time\":\"1 ms\"}","level":"info","timestamp":"2019-07-04T12:42:27.209Z"}
